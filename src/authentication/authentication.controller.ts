@@ -1,7 +1,15 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import {
+  Body,
+  Req,
+  Controller,
+  HttpCode,
+  UseGuards,
+  Post,
+} from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { AuthenticationService } from './authentication.service';
 import RegisterDto from './dto/register.dto';
-import LoginDto from './dto/login.dto';
+import RequestWithUser from './request-with-user.interface';
 
 @Controller('authentication')
 export class AuthenticationController {
@@ -12,8 +20,12 @@ export class AuthenticationController {
     return this.authenticationService.register(registrationData);
   }
 
+  @HttpCode(200)
+  @UseGuards(AuthGuard('local'))
   @Post('log-in')
-  async login(@Body() loginData: LoginDto) {
-    return this.authenticationService.getAuthenticatedUser(loginData);
+  async logIn(@Req() request: RequestWithUser) {
+    const user = request.user;
+    user.password = undefined;
+    return user;
   }
 }
