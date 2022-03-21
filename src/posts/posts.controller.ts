@@ -14,6 +14,7 @@ import PostsService from './posts.service';
 import CreatePostDto from './dto/createPost.dto';
 import UpdatePostDto from './dto/updatePost.dto';
 import CustomHttpExceptionFilter from '../utils/custom-http-exception.filter';
+import GetPostByIdParamsValidator from './validators/get-post-by-id-params.validator';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('posts')
@@ -27,7 +28,7 @@ export default class PostsController {
 
   @Get(':id')
   @UseFilters(CustomHttpExceptionFilter)
-  getPostById(@Param('id') id: string) {
+  getPostById(@Param() { id }: GetPostByIdParamsValidator) {
     return this.postsService.getPostById(Number(id));
   }
 
