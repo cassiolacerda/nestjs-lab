@@ -1,13 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { APP_FILTER } from '@nestjs/core';
 import * as Joi from '@hapi/joi';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { DatabaseModule } from './database/database.module';
 import { PostsModule } from './posts/posts.module';
-import ExceptionsLoggerFilter from './utils/exceptions-logger.filter';
 
 @Module({
   imports: [
@@ -28,12 +26,6 @@ import ExceptionsLoggerFilter from './utils/exceptions-logger.filter';
     PostsModule,
   ],
   controllers: [AppController],
-  providers: [
-    AppService,
-    {
-      provide: APP_FILTER,
-      useClass: ExceptionsLoggerFilter,
-    },
-  ],
+  providers: [AppService],
 })
 export class AppModule {}
