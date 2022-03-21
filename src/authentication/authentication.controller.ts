@@ -32,4 +32,12 @@ export class AuthenticationController {
     response.setHeader('Set-Cookie', cookie);
     return response.send(user);
   }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Post('log-out')
+  async logOut(@Res() response: Response) {
+    const cookie = this.authenticationService.getCookieForLogOut();
+    response.setHeader('Set-Cookie', cookie);
+    return response.sendStatus(200);
+  }
 }
