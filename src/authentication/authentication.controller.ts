@@ -1,5 +1,6 @@
 import {
   Body,
+  Get,
   Req,
   Res,
   Controller,
@@ -39,5 +40,13 @@ export class AuthenticationController {
     const cookie = this.authenticationService.getCookieForLogOut();
     response.setHeader('Set-Cookie', cookie);
     return response.sendStatus(200);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get()
+  authenticate(@Req() request: RequestWithUser) {
+    const user = request.user;
+    user.password = undefined;
+    return user;
   }
 }
