@@ -13,7 +13,7 @@ import { AuthGuard } from '@nestjs/passport';
 import PostsService from './posts.service';
 import CreatePostDto from './dto/createPost.dto';
 import UpdatePostDto from './dto/updatePost.dto';
-import LoggerExceptionFilter from '../utils/logger-exception.filter';
+import CustomHttpExceptionFilter from '../utils/custom-http-exception.filter';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('posts')
@@ -26,7 +26,7 @@ export default class PostsController {
   }
 
   @Get(':id')
-  @UseFilters(LoggerExceptionFilter)
+  @UseFilters(CustomHttpExceptionFilter)
   getPostById(@Param('id') id: string) {
     return this.postsService.getPostById(Number(id));
   }
