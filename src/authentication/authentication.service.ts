@@ -43,7 +43,6 @@ export class AuthenticationService {
     try {
       const user = await this.usersService.getByEmail(loginData.email);
       await this.verifyPassword(loginData.password, user.password);
-      user.password = undefined;
       return user;
     } catch (error) {
       throw new HttpException(
