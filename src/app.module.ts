@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { DatabaseModule } from './database/database.module';
 import { PostsModule } from './posts/posts.module';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { PostsModule } from './posts/posts.module';
       }),
     }),
     AuthenticationModule,
+    CategoriesModule,
     DatabaseModule,
     PostsModule,
   ],
