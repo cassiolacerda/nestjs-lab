@@ -30,9 +30,7 @@ describe('The AuthenticationService', () => {
         },
       ],
     }).compile();
-    authenticationService = await module.get<AuthenticationService>(
-      AuthenticationService,
-    );
+    authenticationService = await module.get(AuthenticationService);
   });
   describe('when creating a cookie', () => {
     it('should return a string', () => {
