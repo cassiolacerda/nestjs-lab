@@ -1,19 +1,45 @@
 import { AuthenticationService } from '../authentication.service';
-import { UsersService } from '../../users/users.service';
-import { Repository } from 'typeorm';
-import User from '../../users/user.entity';
-import { JwtService } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
+import { Test } from '@nestjs/testing';
+import { UsersModule } from '../../users/users.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
+import { DatabaseModule } from '../../database/database.module';
+import * as Joi from '@hapi/joi';
 
 describe('The AuthenticationService', () => {
   let authenticationService: AuthenticationService;
-  beforeEach(() => {
-    authenticationService = new AuthenticationService(
-      new UsersService(new Repository<User>()),
-      new JwtService({
-        secretOrPrivateKey: 'Secret key',
-      }),
-      new ConfigService(),
+  beforeEach(async () => {
+    const module = await Test.createTestingModule({
+      imports: [
+        ConfigModule.forRoot({
+          validationSchema: Joi.object({
+            POSTGRES_HOST: Joi.string().required(),
+            POSTGRES_PORT: Joi.number().required(),
+            POSTGRES_USER: Joi.string().required(),
+            POSTGRES_PASSWORD: Joi.string().required(),
+            POSTGRES_DB: Joi.string().required(),
+            JWT_SECRET: Joi.string().required(),
+            JWT_EXPIRATION_TIME: Joi.string().required(),
+            PORT: Joi.number(),
+          }),
+        }),
+        DatabaseModule,
+        JwtModule.registerAsync({
+          imports: [ConfigModule],
+          inject: [ConfigService],
+          useFactory: async (configService: ConfigService) => ({
+            secret: configService.get('JWT_SECRET'),
+            signOptions: {
+              expiresIn: `${configService.get('JWT_EXPIRATION_TIME')}s`,
+            },
+          }),
+        }),
+        UsersModule,
+      ],
+      providers: [AuthenticationService],
+    }).compile();
+    authenticationService = await module.get<AuthenticationService>(
+      AuthenticationService,
     );
   });
   describe('when creating a cookie', () => {
