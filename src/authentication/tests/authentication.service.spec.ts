@@ -1,10 +1,12 @@
-import { AuthenticationService } from '../authentication.service';
 import { Test } from '@nestjs/testing';
-import { UsersModule } from '../../users/users.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
-import { DatabaseModule } from '../../database/database.module';
+import { getRepositoryToken } from '@nestjs/typeorm';
 import * as Joi from '@hapi/joi';
+
+import { AuthenticationService } from '../authentication.service';
+import { UsersService } from '../../users/users.service';
+import User from '../../users/user.entity';
 
 describe('The AuthenticationService', () => {
   let authenticationService: AuthenticationService;
@@ -23,7 +25,6 @@ describe('The AuthenticationService', () => {
             PORT: Joi.number(),
           }),
         }),
-        DatabaseModule,
         JwtModule.registerAsync({
           imports: [ConfigModule],
           inject: [ConfigService],
@@ -34,9 +35,15 @@ describe('The AuthenticationService', () => {
             },
           }),
         }),
-        UsersModule,
       ],
-      providers: [AuthenticationService],
+      providers: [
+        AuthenticationService,
+        UsersService,
+        {
+          provide: getRepositoryToken(User),
+          useValue: {},
+        },
+      ],
     }).compile();
     authenticationService = await module.get<AuthenticationService>(
       AuthenticationService,
