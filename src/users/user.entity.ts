@@ -6,7 +6,7 @@ import {
   JoinColumn,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Expose } from 'class-transformer';
+import { Exclude } from 'class-transformer';
 import Address from './address.entity';
 import Post from '../posts/post.entity';
 
@@ -16,14 +16,13 @@ class User {
   public id?: number;
 
   @Column({ unique: true })
-  @Expose()
   public email: string;
 
   @Column()
-  @Expose()
   public name: string;
 
   @Column()
+  @Exclude()
   public password: string;
 
   @OneToOne(() => Address, {
@@ -31,7 +30,6 @@ class User {
     cascade: true,
   })
   @JoinColumn()
-  @Expose()
   public address: Address;
 
   @OneToMany(() => Post, (post: Post) => post.author)

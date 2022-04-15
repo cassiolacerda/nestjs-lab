@@ -10,7 +10,6 @@ import {
   UseGuards,
   UseFilters,
   UseInterceptors,
-  SerializeOptions,
   ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
@@ -23,9 +22,6 @@ import RequestWithUser from '../authentication/request-with-user.interface';
 
 @UseGuards(AuthGuard('jwt'))
 @UseInterceptors(ClassSerializerInterceptor)
-@SerializeOptions({
-  strategy: 'excludeAll',
-})
 @Controller('posts')
 export default class PostsController {
   constructor(private readonly postsService: PostsService) {}

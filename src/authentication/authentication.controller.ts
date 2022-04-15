@@ -6,7 +6,6 @@ import {
   Controller,
   HttpCode,
   UseGuards,
-  SerializeOptions,
   UseInterceptors,
   ClassSerializerInterceptor,
   Post,
@@ -19,9 +18,6 @@ import RequestWithUser from './request-with-user.interface';
 
 @Controller('authentication')
 @UseInterceptors(ClassSerializerInterceptor)
-@SerializeOptions({
-  strategy: 'excludeAll',
-})
 export class AuthenticationController {
   constructor(private readonly authenticationService: AuthenticationService) {}
 

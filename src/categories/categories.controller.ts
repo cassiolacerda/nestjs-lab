@@ -7,7 +7,6 @@ import {
   Patch,
   UseGuards,
   UseInterceptors,
-  SerializeOptions,
   ClassSerializerInterceptor,
   Post,
 } from '@nestjs/common';
@@ -20,9 +19,6 @@ import FindOneParamsValidator from './validators/find-one-params.validator';
 
 @UseGuards(AuthGuard('jwt'))
 @UseInterceptors(ClassSerializerInterceptor)
-@SerializeOptions({
-  strategy: 'excludeAll',
-})
 @Controller('categories')
 export default class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
