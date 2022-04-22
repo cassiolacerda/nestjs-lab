@@ -9,7 +9,7 @@ import PublicFile from './public-file.entity';
 @Injectable()
 export class FilesService {
   constructor(
-    @InjectRepository(PublicFile) private publicFileRepository: Repository<PublicFile>,
+    @InjectRepository(PublicFile) private publicFilesRepository: Repository<PublicFile>,
     private readonly configService: ConfigService
   ) {}
  
@@ -22,11 +22,21 @@ export class FilesService {
     })
       .promise();
  
-    const newFile = this.publicFileRepository.create({
+    const newFile = this.publicFilesRepository.create({
       key: uploadResult.Key,
       url: uploadResult.Location
     });
-    await this.publicFileRepository.save(newFile);
+    await this.publicFilesRepository.save(newFile);
     return newFile;
+  }
+
+  async deletePublicFile(fileId: number) {
+    const file = await this.publicFilesRepository.findOne({ id: fileId });
+    const s3 = new S3();
+    await s3.deleteObject({
+      Bucket: this.configService.get('AWS_PUBLIC_BUCKET_NAME'),
+      Key: file.key,
+    }).promise();
+    await this.publicFilesRepository.delete(fileId);
   }
 }

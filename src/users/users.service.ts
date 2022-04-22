@@ -48,4 +48,16 @@ export class UsersService {
     });
     return avatar;
   }
+
+  async deleteAvatar(userId: number) {
+    const user = await this.getById(userId);
+    const fileId = user.avatar?.id;
+    if (fileId) {
+      await this.usersRepository.update(userId, {
+        ...user,
+        avatar: null
+      });
+      await this.filesService.deletePublicFile(fileId)
+    }
+  }
 }
